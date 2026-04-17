@@ -1,0 +1,17 @@
+[
+  {
+    "_id": { "$oid": "660c00000000000000001201" },
+    "conversationId": "660c00000000000000001001_660c00000000000000000001_660c00000000000000000002",
+    "sender": { "$oid": "660c00000000000000000002" },
+    "body": "Heat pad + hydration helps me. I also start OTC pain relief early (before cramps peak) and keep a simple meal. Tracking which timing works made a big difference.",
+    "createdAt": { "$date": "2026-04-02T12:05:00.000Z" }
+  },
+  {
+    "_id": { "$oid": "660c00000000000000001202" },
+    "conversationId": "660c00000000000000001001_660c00000000000000000001_660c00000000000000000002",
+    "sender": { "$oid": "660c00000000000000000001" },
+    "body": "Thank you. I’ll try starting earlier and track timing + symptoms. Heat definitely helps but I wasn’t consistent.",
+    "createdAt": { "$date": "2026-04-02T12:06:30.000Z" }
+  }
+]
+

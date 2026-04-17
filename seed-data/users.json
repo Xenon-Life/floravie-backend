@@ -1,0 +1,38 @@
+[
+  {
+    "_id": { "$oid": "660c00000000000000000001" },
+    "username": "Test User",
+    "email": "test.user@floravie.local",
+    "password": "123456",
+    "age": "25",
+    "number": "1234567890",
+    "role": "user",
+    "isFirstTimeUser": true,
+    "createdAt": { "$date": "2026-04-02T00:00:00.000Z" }
+  },
+  {
+    "_id": { "$oid": "660c00000000000000000002" },
+    "username": "Dr. Sana Khan",
+    "email": "dr.sana@floravie.local",
+    "password": "123456",
+    "age": "34",
+    "number": "03001234567",
+    "role": "doctor",
+    "country": "Pakistan",
+    "practice": "OB/GYN",
+    "isFirstTimeUser": false,
+    "createdAt": { "$date": "2026-04-02T00:00:00.000Z" }
+  },
+  {
+    "_id": { "$oid": "660c00000000000000000003" },
+    "username": "Mariam Ali",
+    "email": "mariam.ali@floravie.local",
+    "password": "123456",
+    "age": "29",
+    "number": "03111222333",
+    "role": "user",
+    "isFirstTimeUser": true,
+    "createdAt": { "$date": "2026-04-02T00:00:00.000Z" }
+  }
+]
+

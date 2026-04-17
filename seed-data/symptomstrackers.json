@@ -1,0 +1,44 @@
+[
+  {
+    "_id": { "$oid": "660c00000000000000000201" },
+    "postedBy": { "$oid": "660c00000000000000000001" },
+    "symptoms": [
+      {
+        "id": 101,
+        "name": "Cramps",
+        "emojiUrl": "https://example.com/emoji/cramps.png",
+        "stars": 3,
+        "timestamp": { "$date": "2026-04-02T09:30:00.000Z" }
+      },
+      {
+        "id": 102,
+        "name": "Headache",
+        "emojiUrl": "https://example.com/emoji/headache.png",
+        "stars": 2,
+        "timestamp": { "$date": "2026-04-02T14:10:00.000Z" }
+      }
+    ],
+    "flow": [
+      {
+        "id": 201,
+        "name": "Medium",
+        "stars": 2,
+        "timestamp": { "$date": "2026-04-02T09:30:00.000Z" }
+      }
+    ],
+    "discharge": [
+      {
+        "id": 301,
+        "name": "Normal",
+        "stars": 0,
+        "timestamp": { "$date": "2026-04-02T09:30:00.000Z" }
+      }
+    ],
+    "reports": [
+      "Mild cramps in the morning",
+      "Hydrated and rested"
+    ],
+    "createdAt": { "$date": "2026-04-02T00:00:00.000Z" }
+  }
+]
+

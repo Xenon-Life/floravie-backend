@@ -1,0 +1,22 @@
+[
+  {
+    "_id": { "$oid": "660c00000000000000000101" },
+    "postedBy": { "$oid": "660c00000000000000000001" },
+    "moodStatus": [
+      {
+        "id": "1",
+        "moodType": "Happy",
+        "moodImgUrl": "https://example.com/emoji/happy.png",
+        "timestamp": { "$date": "2026-04-02T08:00:00.000Z" }
+      },
+      {
+        "id": "3",
+        "moodType": "Tired",
+        "moodImgUrl": "https://example.com/emoji/tired.png",
+        "timestamp": { "$date": "2026-04-02T20:00:00.000Z" }
+      }
+    ],
+    "createdAt": { "$date": "2026-04-02T00:00:00.000Z" }
+  }
+]
+

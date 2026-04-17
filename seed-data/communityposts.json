@@ -1,0 +1,17 @@
+[
+  {
+    "_id": { "$oid": "660c00000000000000001001" },
+    "title": "Severe cramps on day 1",
+    "body": "I get strong cramps on the first day of my period. Heat helps a bit but I still feel nauseous. Any tips that worked for you?",
+    "createdBy": { "$oid": "660c00000000000000000002" },
+    "createdAt": { "$date": "2026-04-02T10:00:00.000Z" }
+  },
+  {
+    "_id": { "$oid": "660c00000000000000001002" },
+    "title": "Acne flare-up before period",
+    "body": "My acne gets worse 5–7 days before my period. I’m trying to keep my routine simple. What has helped you reduce flare-ups?",
+    "createdBy": { "$oid": "660c00000000000000000001" },
+    "createdAt": { "$date": "2026-04-02T11:30:00.000Z" }
+  }
+]
+

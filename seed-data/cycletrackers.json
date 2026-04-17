@@ -1,0 +1,30 @@
+[
+  {
+    "_id": { "$oid": "660c00000000000000000301" },
+    "postedBy": { "$oid": "660c00000000000000000001" },
+    "averageCycleLength": 28,
+    "averagePeriodLength": 5,
+    "cycleHistory": [
+      {
+        "date": "2026-03-30",
+        "symptom": "Cramps",
+        "trackerType": "Period",
+        "timestamp": { "$date": "2026-03-30T09:00:00.000Z" }
+      },
+      {
+        "date": "2026-03-31",
+        "symptom": "Headache",
+        "trackerType": "Period",
+        "timestamp": { "$date": "2026-03-31T09:00:00.000Z" }
+      },
+      {
+        "date": "2026-04-01",
+        "symptom": "Low energy",
+        "trackerType": "Period",
+        "timestamp": { "$date": "2026-04-01T09:00:00.000Z" }
+      }
+    ],
+    "createdAt": { "$date": "2026-04-02T00:00:00.000Z" }
+  }
+]
+
