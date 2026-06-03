@@ -11,6 +11,7 @@ const moodTrackerRoutes = require("./routes/moodTrackerRoutes");
 const symptomsTrackerRoutes = require("./routes/symptomsTrackerRoutes");
 const cycleTrackerRoutes = require("./routes/cycleTrackerRoutes");
 const communityRoutes = require("./routes/communityRoutes");
+const clinicRoutes = require("./routes/clinicRoutes");
 const jwt = require("jsonwebtoken");
 const Conversation = require("./models/conversation");
 const Message = require("./models/message");
@@ -49,6 +50,7 @@ app.use("/api/allusers", authRoutes);
 app.use("/api/symptoms-tracker", symptomsTrackerRoutes);
 app.use("/api/cycle-tracker", cycleTrackerRoutes);
 app.use("/api/community", communityRoutes);
+app.use("/api/clinics", clinicRoutes);
 
 // ---- Socket.IO (private rooms) ----
 const io = new Server(server, {
