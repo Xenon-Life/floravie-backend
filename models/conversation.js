@@ -15,6 +15,11 @@ const conversationSchema = new mongoose.Schema({
       index: true,
     },
   ],
+  type: {
+    type: String,
+    enum: ["group", "dm"],
+    default: "group",
+  },
   post: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "CommunityPost",

@@ -4,15 +4,9 @@ const Message = require("../models/message");
 
 const toObjectIdString = (v) => (v ? String(v) : "");
 
-/**
- * One private thread per (post + pair of users). Same two users on different posts = different rooms.
- */
-const buildConversationId = (postId, userAId, userBId) => {
-  const a = toObjectIdString(userAId);
-  const b = toObjectIdString(userBId);
-  const pair = [a, b].sort().join("_");
-  return `${toObjectIdString(postId)}_${pair}`;
-};
+/** One shared group room per community post (all participants). */
+const buildGroupConversationId = (postId) =>
+  `group_${toObjectIdString(postId)}`;
 
 const ensureParticipant = async (conversationId, userId) => {
   const convo = await Conversation.findOne({ conversationId }).select(
@@ -82,28 +76,35 @@ exports.startConversation = async (req, res) => {
     const post = await CommunityPost.findById(postId).select("_id createdBy");
     if (!post) return res.status(404).json({ message: "Post not found" });
 
-    const userAId = req.user._id; // requester
-    const userBId = post.createdBy; // post author
+    const userId = req.user._id;
+    const authorId = post.createdBy;
+    const conversationId = buildGroupConversationId(post._id);
 
-    if (toObjectIdString(userAId) === toObjectIdString(userBId)) {
-      return res.status(400).json({ message: "You cannot chat with yourself." });
-    }
-
-    const conversationId = buildConversationId(post._id, userAId, userBId);
-
+    // Cannot use $setOnInsert and $addToSet on the same field (participants) — MongoDB conflict.
     const convo = await Conversation.findOneAndUpdate(
       { conversationId },
       {
         $setOnInsert: {
           conversationId,
-          participants: [userAId, userBId],
+          type: "group",
           post: post._id,
         },
+        $addToSet: {
+          participants: { $each: [userId, authorId] },
+        },
       },
-      { new: true, upsert: true }
-    ).select("conversationId participants post createdAt");
+      { upsert: true, new: true }
+    ).select("conversationId participants post createdAt type");
 
-    return res.status(200).json({ conversationId: convo.conversationId });
+    if (!convo) {
+      return res.status(500).json({ message: "Could not create group chat." });
+    }
+
+    return res.status(200).json({
+      conversationId: convo.conversationId,
+      participantCount: (convo.participants || []).length,
+      type: convo.type || "group",
+    });
   } catch (error) {
     console.error("startConversation error:", error);
     return res.status(500).json({ message: "Internal Server Error" });
@@ -131,9 +132,24 @@ exports.getMessages = async (req, res) => {
 exports.getConversation = async (req, res) => {
   try {
     const { conversationId } = req.params;
-    const convo = await ensureParticipant(conversationId, req.user._id);
-    if (!convo) return res.status(403).json({ message: "Forbidden" });
-    return res.status(200).json({ conversation: convo });
+    const convo = await Conversation.findOne({ conversationId }).select(
+      "conversationId participants post createdAt type"
+    );
+    if (!convo) return res.status(404).json({ message: "Conversation not found" });
+
+    const allowed = await ensureParticipant(conversationId, req.user._id);
+    if (!allowed) return res.status(403).json({ message: "Forbidden" });
+
+    return res.status(200).json({
+      conversation: {
+        conversationId: convo.conversationId,
+        type: convo.type || "group",
+        post: convo.post,
+        createdAt: convo.createdAt,
+        participantCount: (convo.participants || []).length,
+        participants: (convo.participants || []).map((p) => String(p)),
+      },
+    });
   } catch (error) {
     console.error("getConversation error:", error);
     return res.status(500).json({ message: "Internal Server Error" });
@@ -141,8 +157,7 @@ exports.getConversation = async (req, res) => {
 };
 
 /**
- * For the post author: list private chats on this post where they are a participant.
- * So when someone else clicks "Chat Privately" on your post, you can open the same room here.
+ * Group chat for a post — any logged-in user can see room status and join via POST /conversations.
  */
 exports.listConversationsForPost = async (req, res) => {
   try {
@@ -156,28 +171,26 @@ exports.listConversationsForPost = async (req, res) => {
     }
 
     const uid = toObjectIdString(req.user._id);
-    if (toObjectIdString(post.createdBy) !== uid) {
-      return res.status(403).json({ message: "Only the post author can list chats here." });
-    }
-
-    const convos = await Conversation.find({ post: post._id }).select(
-      "conversationId participants createdAt"
+    const conversationId = buildGroupConversationId(post._id);
+    const convo = await Conversation.findOne({ conversationId }).select(
+      "conversationId participants createdAt type"
     );
 
-    const mine = convos.filter((c) =>
-      (c.participants || []).some((p) => toObjectIdString(p) === uid)
-    );
+    const participants = (convo?.participants || []).map((p) => String(p));
+    const isParticipant = participants.some((p) => p === uid);
 
-    const out = mine.map((c) => {
-      const other = (c.participants || []).find((p) => toObjectIdString(p) !== uid);
-      return {
-        conversationId: c.conversationId,
-        createdAt: c.createdAt,
-        otherParticipantId: other ? String(other) : null,
-      };
+    return res.status(200).json({
+      groupChat: {
+        conversationId,
+        exists: !!convo,
+        type: convo?.type || "group",
+        participantCount: participants.length,
+        isParticipant,
+        createdAt: convo?.createdAt || null,
+      },
+      // Legacy 1:1 rooms (pre-group migration) — still openable by id if needed.
+      legacyConversations: [],
     });
-
-    return res.status(200).json({ conversations: out });
   } catch (error) {
     console.error("listConversationsForPost error:", error);
     return res.status(500).json({ message: "Internal Server Error" });
